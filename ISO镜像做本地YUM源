@@ -1,0 +1,41 @@
+龙芯使用ISO镜像做本地YUM源-20180808
+2018年08月08日 
+ (以NKLS-V7_U4-LS64-REL-buildXX.iso为例)；
+
+
+
+有时候在没有外网连接的时候无法使用YUM从外网下载RPM包，这时可能需要创建本地YUM源，如果有一个现成的完整的ISO镜像，可以挂载ISO镜像文件做为本地YUM源。主要步骤如下:
+1 创建iso存放目录/hhh
+和挂载目录/nnn
+
+
+#mkdir /hhh
+将iso镜像复制到/hhh目录下；
+ /hhh/NKLS-V7_U4-LS64-REL-buildXX.iso
+
+ 2 挂载iso镜像到挂载目录/nnn下
+#mkdir /nnn
+mount -o loop  /hhh/NKLS-V7_U4-LS64-REL-buildXX.iso /nnn
+
+3 使用df -TH |grep /nnn命令查询挂载是否成功
+#df -TH |grep /nnn 
+
+4 创建repo文件并放到/etc/yum.repos.d/目录
+cd /etc/yum.repos.d
+vim local.repo
+
+
+
+ vim local.repo
+
+[local]
+name=local
+#注：这里的baseurl就是你挂载的目录，在这里是/nnn
+baseurl=file:///nnn
+#注：这里的值enabled一定要为1
+enabled=1
+gpgcheck=0
+#注：这个你cd /nnn
+可以看到这个key，这里仅仅是个例子
+gpgkey=file:///nnn/repodata
+~
